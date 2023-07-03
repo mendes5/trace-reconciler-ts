@@ -1,4 +1,4 @@
-import { createFiberRoot, ref, reconcile } from './lib.mjs';
+import { createFiberRoot, ref, reconcile, use } from './lib.mjs';
 
 const add = (a, b) => a + b;
 
@@ -57,6 +57,28 @@ const gen = reconcile(function* gen(x) {
 
     counterRef.current += 1;
 
+    const next = yield use(function*() {
+        try {
+            let i = 0;
+    
+            while (true) {
+                yield [i++, Math.random()];
+            }
+        // TODO: implement cleanup and dispose
+        // must work on conditional branches and
+        // for/while loops
+        // making it work in anything other than
+        // the root scope where JS control flow
+        // happens like on array.map is not on
+        // the plans since it will lose root generator
+        // context
+        } finally {
+            console.log('Cleanup');
+        }
+    });
+
+    console.log('next', next);
+
     const a = yield add(counterRef.current, x);
     const b = yield add(counterRef.current, 3);
     const c = yield multiply(a, b);
@@ -71,8 +93,10 @@ const gen = reconcile(function* gen(x) {
 const myGenerator = createFiberRoot(gen)
 
 const main = async () => {
-    myGenerator(4).then(console.log);
-    myGenerator(8).then(console.log);
+    console.log(await myGenerator(1));
+    console.log(await myGenerator(2));
+    console.log(await myGenerator(3)); 
+    console.log(await myGenerator(4));
 }
 
 main();

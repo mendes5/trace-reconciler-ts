@@ -17,17 +17,21 @@ export const ref = reconcile(function* ref(current) {
     return yield { Ref, initial: { current } };
 });
 
-export const refPlugin = {
-    matches: (value) => value.Ref === Ref,
-    exec: (value, ctx) => {
-        const callStackCacheKey = ctx.thread.join('@');
-        const cached = ctx.cache.get(callStackCacheKey);
+export const refPlugin = (ctx) => {
+    ctx.cache = new Map();
 
-        if (cached) {
-            return cached.initial;
-        } else {
-            ctx.cache.set(callStackCacheKey, value)
-            return value.initial;
+    return {
+        matches: (value) => value.Ref === Ref,
+        exec: (value, ctx) => {
+            const callStackCacheKey = ctx.thread.join('@');
+            const cached = ctx.cache.get(callStackCacheKey);
+
+            if (cached) {
+                return cached.initial;
+            } else {
+                ctx.cache.set(callStackCacheKey, value)
+                return value.initial;
+            }
         }
     }
 };
