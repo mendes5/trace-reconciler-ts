@@ -1,4 +1,12 @@
-# memo hook
-# Keyed for iterators
-# Be able to extend the api `yield { Frame, callback }`
-# React integration
+# Todo
+ - [x] Be able to keep context between invocations
+ - [x] Support async generators
+ - [ ] Support sync generators
+ - [x] Custom yield handlers via plugins
+ - [ ] Cleanup/dispose system for inactive branches 
+ - [ ] Memo plugin
+ - [x] Ref plugin
+ - [x] Use plugin
+ - [ ] Keyed for iterators
+ - [ ] React integration
+ - [ ] TypeScript
