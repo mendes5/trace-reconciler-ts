@@ -1,4 +1,4 @@
-import { reconcile, createFiberRoot, ref } from './lib.mjs';
+import { createFiberRoot, ref, reconcile } from './lib.mjs';
 
 const add = (a, b) => a + b;
 
