@@ -26,8 +26,10 @@ export const r = fn => (...args) => {
 const isGenerator = generator => generator && (generator.toString() === '[object Generator]' || generator.toString() === '[object AsyncGenerator]');
 
 // TODO: create async and sync versions
-export const handleGenericGenerator = async (generator, ctx, plugins) => {
+export const enterScope = async (generator, ctx, plugins) => {
     let previousHead;
+
+    // Keep a list of recordedPositions that should be cleared
 
     if (generator.recordedPosition) {
         previousHead = ctx.traceHead;
@@ -48,6 +50,7 @@ export const handleGenericGenerator = async (generator, ctx, plugins) => {
             ctx.traceHead.__tap++;
         }
 
+        // Record that recordedPosition was used
     }
 
     const handlePlugins = (value, ctx) => {
@@ -66,7 +69,7 @@ export const handleGenericGenerator = async (generator, ctx, plugins) => {
                 last = await generator.next(last?.value);
 
                 if (isGenerator(last?.value)) {
-                    last.value = await handleGenericGenerator(last.value, ctx, plugins);
+                    last.value = await enterScope(last.value, ctx, plugins);
                 } else {
                     last.value = handlePlugins(last.value, ctx);
                 }
@@ -79,6 +82,8 @@ export const handleGenericGenerator = async (generator, ctx, plugins) => {
         if (generator.recordedPosition) {
             ctx.traceHead = previousHead;
             ctx.thread.pop();
+
+            // Here Unused positions should be disposed
         }
     }
 };

@@ -1,4 +1,4 @@
-import { handleGenericGenerator } from './core.mjs';
+import { enterScope } from './core.mjs';
 import { refPlugin } from './ref-plugin.mjs';
 import { usePlugin } from './use-plugin.mjs';
 
@@ -20,7 +20,7 @@ export const createFiberRoot = (gen, plugins = []) => {
         if (lock.current) {
             await lock.current;
         }
-        lock.current = handleGenericGenerator(gen(...args), ctx, instantiatedPlugins);
+        lock.current = enterScope(gen(...args), ctx, instantiatedPlugins);
         const result = await lock.current;
         lock.current = null;
 
