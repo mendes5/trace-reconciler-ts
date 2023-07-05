@@ -1,24 +1,36 @@
-import { createContext, enterScope } from './core.mjs';
+import { createContext, disposeRecursive, enterScope } from './core.mjs';
 import { refPlugin } from './ref-plugin.mjs';
 import { usePlugin } from './use-plugin.mjs';
 import { createLock } from './utils.mjs';
 
-export const createFiberRoot = (gen, plugins = []) => {
+export const createFiberRoot = (gen, plugins = [], options = {}) => {
 
     const ctx = createContext();
     const lock = createLock();
 
     const instantiatedPlugins = [...plugins, refPlugin, usePlugin].map(x => x(ctx));
 
-    return async (...args) => {
+    const tick = async function (...args)  {
         const result = await lock(() =>
             enterScope(gen(...args), ctx, instantiatedPlugins)
         );
 
-        console.log('TRACE DUMP', JSON.stringify(ctx.trace, null, '  '));
+        if (options.dumpTrace) {
+            console.log('TRACE DUMP', JSON.stringify(ctx.trace, null, '  '));
+        }
 
         return result;
     };
+
+    // Dispose is async because it might still
+    // be running enqueued calls
+    tick.dispose = async () => {
+        await lock(() =>
+            disposeRecursive(ctx.traceHead, instantiatedPlugins)
+        );
+    };
+
+    return tick;
 };
 
 export { ref } from './ref-plugin.mjs';

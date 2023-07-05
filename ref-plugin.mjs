@@ -17,22 +17,21 @@ export const ref = r(function*(current) {
     return yield { Ref, initial: { current } };
 });
 
-export const refPlugin = (ctx) => {
-    ctx.cache = new Map();
-
+export const refPlugin = () => {
     return {
         matches: (value) => value.Ref === Ref,
-        exec: (value, ctx) => {
-            const callStackCacheKey = ctx.thread.join('@');
-            const cached = ctx.cache.get(callStackCacheKey);
+        exec: (value, key, ctx) => {
+            if (!ctx.refs) {
+                ctx.refs = {};
+            }
+            const cached = ctx.refs[key];
 
             if (cached) {
                 return cached.initial;
             } else {
-                ctx.cache.set(callStackCacheKey, value)
+                ctx.refs[key] = value;
                 return value.initial;
             }
         }
     }
 };
-

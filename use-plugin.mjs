@@ -6,21 +6,27 @@ export const use = r(function*(generator) {
     return yield { Use, generator };
 });
 
-export const usePlugin = (ctx) => {
-    ctx.genCache = new Map();
+export const usePlugin = () => {
     return {
         matches: (value) => value.Use === Use,
-        exec: ({ generator }, ctx) => {
-            const callStackCacheKey = ctx.thread.join('@');
-            const cached = ctx.genCache.get(callStackCacheKey);
+        dispose: (ctx) => {
+            for (const gen of Object.values(ctx.uses ?? {})) {
+                gen.return();
+            }
+        },
+        exec: ({ generator }, key, ctx) => {
+            if (!ctx.uses) {
+                ctx.uses = {};
+            }
+            const cached = ctx.uses[key];
 
             if (cached) {
                 return cached.next().value;
             } else {
                 const newItem = generator();
-                newItem.next();
-                ctx.genCache.set(callStackCacheKey, newItem);
-                return newItem.next().value;
+                const result = newItem.next().value;
+                ctx.uses[key] = newItem;
+                return result;
             }
         }
     }
