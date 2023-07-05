@@ -1,28 +1,19 @@
-import { enterScope } from './core.mjs';
+import { createContext, enterScope } from './core.mjs';
 import { refPlugin } from './ref-plugin.mjs';
 import { usePlugin } from './use-plugin.mjs';
+import { createLock } from './utils.mjs';
 
 export const createFiberRoot = (gen, plugins = []) => {
-    const traceHead = {};
 
-    const ctx = {
-        trace: traceHead,
-        traceHead: traceHead,
-        thread: [],
-    };
-
-    const lock = { current: null };
+    const ctx = createContext();
+    const lock = createLock();
 
     const instantiatedPlugins = [...plugins, refPlugin, usePlugin].map(x => x(ctx));
 
-    // TODO: implement dispose
     return async (...args) => {
-        if (lock.current) {
-            await lock.current;
-        }
-        lock.current = enterScope(gen(...args), ctx, instantiatedPlugins);
-        const result = await lock.current;
-        lock.current = null;
+        const result = await lock(() =>
+            enterScope(gen(...args), ctx, instantiatedPlugins)
+        );
 
         console.log('TRACE DUMP', JSON.stringify(ctx.trace, null, '  '));
 

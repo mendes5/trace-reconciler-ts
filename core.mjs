@@ -25,6 +25,18 @@ export const r = fn => (...args) => {
 
 const isGenerator = generator => generator && (generator.toString() === '[object Generator]' || generator.toString() === '[object AsyncGenerator]');
 
+export const createContext = () => {
+    const traceHead = {};
+
+    const ctx = {
+        trace: traceHead,
+        traceHead: traceHead,
+        thread: [],
+    };
+
+    return ctx;
+};
+
 // TODO: create async and sync versions
 export const enterScope = async (generator, ctx, plugins) => {
     let previousHead;

@@ -12,3 +12,48 @@
  - [ ] Keyed for iterators
  - [ ] React integration
  - [ ] TypeScript
+
+# Generator styles:
+
+```js
+var createBuffer = r(function*() {
+  const buffer = device.createBuffer();
+
+  yield buffer;
+
+  buffer.destroy();
+});
+
+var createBuffer = r(function*() {
+  try {
+    const buffer = device.createBuffer();
+    yield  buffer;
+  } finally {
+    this.return.destroy();
+  }
+});
+
+var createBuffer = r(function*() {
+  try {
+    while (true) {
+      const buffer = device.createBuffer();
+      yield  buffer;
+    }
+  } finally {
+    this.return.destroy();
+  }
+});
+
+var createBuffer = r(function*() {
+  try {
+    const buffer = device.createBuffer();
+    while (true) {
+      yield buffer;
+      buffer.update();
+    }
+  } finally {
+    this.return.destroy();
+  }
+});
+
+```
