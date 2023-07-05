@@ -1,10 +1,12 @@
 # Todo
  - [x] Be able to keep context between invocations
+ - [x] Build a "trace object" in the first run, and update it in follow up calls
+ - [ ] Use the trace object to properly call destructors or to skip destructors for memoized code-paths. 
+ - [ ] Cleanup/dispose system for inactive branches 
+ - [ ] Memo plugin
  - [x] Support async generators
  - [ ] Support sync generators
  - [x] Custom yield handlers via plugins
- - [ ] Cleanup/dispose system for inactive branches 
- - [ ] Memo plugin
  - [x] Ref plugin
  - [x] Use plugin
  - [ ] Keyed for iterators
