@@ -1,8 +1,8 @@
-import { reconcile } from "./core.mjs";
+import { r } from "./core.mjs";
 
 const Use = Symbol('Use');
 
-export const use = reconcile(function* ref(generator) {
+export const use = r(function*(generator) {
     return yield { Use, generator };
 });
 

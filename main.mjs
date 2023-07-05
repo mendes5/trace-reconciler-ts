@@ -1,27 +1,27 @@
-import { createFiberRoot, ref, reconcile, use } from './lib.mjs';
+import { createFiberRoot, ref, r, use } from './lib.mjs';
 
 const add = (a, b) => a + b;
 
-const count = reconcile(function* count() {
+const count = r(function*() {
     const counterRef = yield ref(0);
 
     counterRef.current += 1;
     return counterRef.current;
 });
 
-const logRunsInParent = reconcile(function* logRunsInParent(name, parent) {
+const logRunsInParent = r(function*(name, parent) {
     const runCount = yield count();
     const debug = false;
     if (debug)
         console.log(`Log: ${name} ran ${runCount} times in ${parent}`);
 });
 
-const assert = reconcile(function* assert(thing, type, parent) {
+const assert = r(function*(thing, type, parent) {
     yield logRunsInParent('assert', parent);
     return yield typeof thing === type;
 });
 
-const multiply = reconcile(function* multiply(a, b) {
+const multiply = r(function*(a, b) {
     const x = yield add(a, 0);
     const y = yield add(b, 0);
 
@@ -32,7 +32,7 @@ const multiply = reconcile(function* multiply(a, b) {
     return x * y;
 });
 
-const divide = reconcile(function* divide(x, y) {
+const divide = r(function*(x, y) {
     const a = yield add(0, x);
     const b = yield multiply(1, y);
     const d = yield multiply(1, y);
@@ -47,17 +47,17 @@ const divide = reconcile(function* divide(x, y) {
 
 const delay = (ms) => new Promise(res => setTimeout(res, ms));
 
-const createRandomAfterOneSecond = reconcile(async function * createRandomAfterOneSecond() {
+const createRandomAfterOneSecond = r(async function *() {
     await delay();
     return Math.random() * 10;
 });
 
-const gen = reconcile(function* gen(x) {
+const gen = r(function*(x) {
     const counterRef = yield ref(0);
 
     counterRef.current += 1;
 
-    const next = yield use(function*() {
+    yield use(function*() {
         try {
             let i = 0;
     
@@ -76,8 +76,6 @@ const gen = reconcile(function* gen(x) {
             console.log('Cleanup');
         }
     });
-
-    console.log('next', next);
 
     const a = yield add(counterRef.current, x);
     const b = yield add(counterRef.current, 3);

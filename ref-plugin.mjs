@@ -1,10 +1,10 @@
-import { reconcile } from "./core.mjs";
+import { r } from "./core.mjs";
 
 const Ref = Symbol('Ref');
 
 // Like useRef from react
 // Keeps a mutable cell alive between reconciliations 
-export const ref = reconcile(function* ref(current) {
+export const ref = r(function*(current) {
     // This is the way we communicate with the runtime
     // yield symbols to the root, so we can
     // avoid passing context objects around or

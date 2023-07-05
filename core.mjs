@@ -5,7 +5,7 @@ const getStackFrame = (depth) =>
 // for example, one that is an infinite while
 // loop, that each call runs one iteration
 // currently only OneShot is implemented.
-export const reconcile = fn => (...args) => {
+export const r = fn => (...args) => {
     // 0 Error Object
     // 1 GetStackFrame
     // 2 This Function
@@ -27,8 +27,27 @@ const isGenerator = generator => generator && (generator.toString() === '[object
 
 // TODO: create async and sync versions
 export const handleGenericGenerator = async (generator, ctx, plugins) => {
+    let previousHead;
+
     if (generator.recordedPosition) {
+        previousHead = ctx.traceHead;
+
         ctx.thread.push(generator.recordedPosition);
+        
+        if (!ctx.traceHead[generator.recordedPosition]) {
+            let head = {
+                // debug value to see if
+                // this is being created
+                // or used in follow up calls
+                __tap: 0,
+            };
+            ctx.traceHead[generator.recordedPosition] = head;
+            ctx.traceHead = head;
+        } else {
+            ctx.traceHead = ctx.traceHead[generator.recordedPosition];
+            ctx.traceHead.__tap++;
+        }
+
     }
 
     const handlePlugins = (value, ctx) => {
@@ -58,6 +77,7 @@ export const handleGenericGenerator = async (generator, ctx, plugins) => {
         }
     } finally {
         if (generator.recordedPosition) {
+            ctx.traceHead = previousHead;
             ctx.thread.pop();
         }
     }
