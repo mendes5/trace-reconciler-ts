@@ -9,7 +9,7 @@
  - [x] Custom yield handlers via plugins
  - [x] Ref plugin
  - [x] Use plugin
- - [ ] Keyed for iterators
+ - [x] Keyed for iterators
  - [ ] React integration
  - [ ] TypeScript
 

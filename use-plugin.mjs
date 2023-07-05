@@ -15,6 +15,8 @@ export const usePlugin = () => {
             }
         },
         exec: ({ generator }, key, ctx) => {
+            var key = key.join('@');
+
             if (!ctx.uses) {
                 ctx.uses = {};
             }

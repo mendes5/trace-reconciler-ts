@@ -100,7 +100,7 @@ export const enterScope = async (generator, ctx, plugins) => {
             if (isGenerator(last?.value)) {
                 last.value = await enterScope(last.value, ctx, plugins);
             } else {
-                last.value = handlePlugins(last.value, ctx.thread.join('@'));
+                last.value = handlePlugins(last.value, ctx.thread);
             }
         } while (last.done === false);
 

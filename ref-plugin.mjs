@@ -21,6 +21,7 @@ export const refPlugin = () => {
     return {
         matches: (value) => value.Ref === Ref,
         exec: (value, key, ctx) => {
+            var key = key.join('@');
             if (!ctx.refs) {
                 ctx.refs = {};
             }
