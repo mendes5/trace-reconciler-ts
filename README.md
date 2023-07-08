@@ -3,7 +3,7 @@
  - [x] Build a "trace object" in the first run, and update it in follow up calls
  - [x] Use the trace object to properly call destructors or to skip destructors for memoized code-paths. 
  - [x] Cleanup/dispose system for inactive branches 
- - [ ] Memo plugin
+ - [x] Memo plugin
  - [x] Support async generators
  - [ ] Support sync generators
  - [x] Custom yield handlers via plugins
