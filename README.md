@@ -5,7 +5,7 @@
  - [x] Cleanup/dispose system for inactive branches 
  - [x] Memo plugin
  - [x] Support async generators
- - [ ] Support sync generators
+ - [x] Support sync generators
  - [x] Custom yield handlers via plugins
  - [x] Ref plugin
  - [x] Use plugin
