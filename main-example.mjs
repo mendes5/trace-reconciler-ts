@@ -1,4 +1,4 @@
-import { createFiberRoot, ref, r, use } from './lib.mjs';
+import { createFiberRoot, ref, r, use } from './src/lib.mjs';
 
 const add = (a, b) => a + b;
 

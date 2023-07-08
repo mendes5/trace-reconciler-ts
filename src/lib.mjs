@@ -1,7 +1,7 @@
 import { createContext, disposeRecursive, enterScope } from './core.mjs';
-import { keyPlugin } from './key-plugin.mjs';
-import { refPlugin } from './ref-plugin.mjs';
-import { usePlugin } from './use-plugin.mjs';
+import { keyPlugin } from './plugins/key-plugin.mjs';
+import { refPlugin } from './plugins/ref-plugin.mjs';
+import { usePlugin } from './plugins/use-plugin.mjs';
 import { createLock } from './utils.mjs';
 
 export const createFiberRoot = (gen, plugins = [], options = {}) => {
@@ -34,7 +34,7 @@ export const createFiberRoot = (gen, plugins = [], options = {}) => {
     return tick;
 };
 
-export { ref } from './ref-plugin.mjs';
-export { key } from './key-plugin.mjs';
-export { use } from './use-plugin.mjs';
+export { ref } from './plugins/ref-plugin.mjs';
+export { key } from './plugins/key-plugin.mjs';
+export { use } from './plugins/use-plugin.mjs';
 export { r } from './core.mjs';

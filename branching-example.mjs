@@ -1,5 +1,5 @@
-import { r } from "./core.mjs";
-import { createFiberRoot, use } from "./lib.mjs";
+import { r } from "./src/core.mjs";
+import { createFiberRoot, use } from "./src/lib.mjs";
 
 const count = r(function* (label) {
     return yield use(function* () {

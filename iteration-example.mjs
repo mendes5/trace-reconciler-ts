@@ -1,5 +1,4 @@
-import { r } from "./core.mjs";
-import { createFiberRoot, key, use } from "./lib.mjs";
+import { createFiberRoot, key, use, r } from "./src/lib.mjs";
 
 const range = n => [...new Array(n)].map((_, i) => i);
 

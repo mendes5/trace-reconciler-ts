@@ -1,4 +1,4 @@
-import { r } from "./core.mjs";
+import { r } from "../core.mjs";
 
 const Use = Symbol('Use');
 
