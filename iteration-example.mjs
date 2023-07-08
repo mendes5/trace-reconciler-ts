@@ -1,11 +1,11 @@
-import { createFiberRoot, key, use, r } from "./src/lib.mjs";
+import { createSyncFiberRoot, key, use, r } from "./src/lib.mjs";
 
 const range = n => [...new Array(n)].map((_, i) => i);
 
 const count = r(function* (label, initial) {
     return yield use(function* () {
         console.log(`Setup ${label}`);
-        
+
         let i = initial;
 
         try {
@@ -27,7 +27,7 @@ const count = r(function* (label, initial) {
 // Kinda like a virtual stack frame.
 // Or a dedicated stack frame for
 // each loop iteration.
-const gen = r(function * () {
+const gen = r(function* () {
     for (const i of range(3)) {
         const unKey = yield key(i);
 
@@ -41,13 +41,9 @@ const gen = r(function * () {
     }
 });
 
-const tick = createFiberRoot(gen)
+const tick = createSyncFiberRoot(gen)
 
-const main = async () => {
-    for (const _ of new Array(3)) 
-        await tick();
+for (const _ of new Array(3))
+    tick();
 
-    await tick.dispose();
-}
-
-main();
+tick.dispose();

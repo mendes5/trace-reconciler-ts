@@ -1,10 +1,9 @@
-import { r } from "./src/core.mjs";
-import { createFiberRoot, use } from "./src/lib.mjs";
+import { r, createSyncFiberRoot, use } from "./src/lib.mjs";
 
 const count = r(function* (label) {
     return yield use(function* () {
         console.log(`Setup ${label}`);
-        
+
         let i = 0;
 
         try {
@@ -18,7 +17,7 @@ const count = r(function* (label) {
     });
 });
 
-const gen = r(function * () {
+const gen = r(function* () {
     const root = yield count('root');
 
     // Its a bit weird seeing the cleanup
@@ -33,13 +32,9 @@ const gen = r(function * () {
     }
 });
 
-const tick = createFiberRoot(gen)
+const tick = createSyncFiberRoot(gen)
 
-const main = async () => {
-    for (const _ of new Array(24)) 
-        await tick();
+for (const _ of new Array(24))
+    tick();
 
-    await tick.dispose();
-}
-
-main();
+tick.dispose();

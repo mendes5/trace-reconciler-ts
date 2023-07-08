@@ -1,4 +1,4 @@
-import { createFiberRoot, ref, r, use } from './src/lib.mjs';
+import { createAsyncFiberRoot, ref, r, use } from './src/lib.mjs';
 
 const add = (a, b) => a + b;
 
@@ -48,7 +48,7 @@ const divide = r(function* (x, y) {
 const delay = (ms) => new Promise(res => setTimeout(res, ms));
 
 const createRandomAfterOneSecond = r(async function* () {
-    await delay();
+    await delay(1000);
     return Math.random() * 10;
 });
 
@@ -80,7 +80,7 @@ const gen = r(function* (x) {
     return [a, b, c, d];
 });
 
-const myGenerator = createFiberRoot(gen)
+const myGenerator = createAsyncFiberRoot(gen)
 
 const main = async () => {
     console.log(await myGenerator(1));

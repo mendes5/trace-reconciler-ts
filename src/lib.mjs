@@ -1,11 +1,11 @@
-import { createContext, disposeRecursive, enterScope } from './core.mjs';
+import { createContext, disposeRecursive, enterScopeSync, enterScopeAsync } from './core.mjs';
 import { keyPlugin } from './plugins/key-plugin.mjs';
 import { memoPlugin } from './plugins/memo-plugin.mjs';
 import { refPlugin } from './plugins/ref-plugin.mjs';
 import { usePlugin } from './plugins/use-plugin.mjs';
 import { createLock } from './utils.mjs';
 
-export const createFiberRoot = (gen, plugins = [], options = {}) => {
+export const createAsyncFiberRoot = (gen, plugins = [], options = {}) => {
 
     const ctx = createContext();
     const lock = createLock();
@@ -14,7 +14,7 @@ export const createFiberRoot = (gen, plugins = [], options = {}) => {
 
     const tick = async function (...args)  {
         const result = await lock(() =>
-            enterScope(gen(...args), ctx, instantiatedPlugins)
+            enterScopeAsync(gen(...args), ctx, instantiatedPlugins)
         );
 
         if (options.dumpTrace) {
@@ -34,6 +34,29 @@ export const createFiberRoot = (gen, plugins = [], options = {}) => {
 
     return tick;
 };
+
+export const createSyncFiberRoot = (gen, plugins = [], options = {}) => {
+
+    const ctx = createContext();
+    const lock = createLock();
+
+    const instantiatedPlugins = [...plugins, refPlugin, usePlugin, keyPlugin, memoPlugin].map(x => x(ctx));
+
+    const tick = function (...args)  {
+        const result = enterScopeSync(gen(...args), ctx, instantiatedPlugins)
+
+        if (options.dumpTrace) {
+            console.log('TRACE DUMP', JSON.stringify(ctx.trace, null, '  '));
+        }
+
+        return result;
+    };
+
+    tick.dispose = () => disposeRecursive(ctx.traceHead, instantiatedPlugins);
+
+    return tick;
+};
+
 
 export { ref } from './plugins/ref-plugin.mjs';
 export { key } from './plugins/key-plugin.mjs';
