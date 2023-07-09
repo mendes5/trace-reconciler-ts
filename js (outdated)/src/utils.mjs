@@ -1,3 +1,6 @@
+export const getStackFrame = (depth) =>
+    `${new Error().stack.split('\n')[depth].trim().split('/').slice(-1)[0]}`;
+
 export const createLock = () => {
     const lock = { current: null };
 

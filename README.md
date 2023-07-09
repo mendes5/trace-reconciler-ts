@@ -10,8 +10,8 @@
  - [x] Ref plugin
  - [x] Use plugin
  - [x] Keyed for iterators
+ - [x] TypeScript (impossible)
  - [ ] React integration
- - [ ] TypeScript
 
 # Generator styles:
 

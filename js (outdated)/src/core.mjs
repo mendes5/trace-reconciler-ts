@@ -1,5 +1,4 @@
-const getStackFrame = (depth) =>
-    `${new Error().stack.split('\n')[depth].trim().split('/').slice(-1)[0]}`;
+import { getStackFrame } from "./utils.mjs";
 
 export const r = fn => (...args) => {
     // 0 Error Object
@@ -7,16 +6,9 @@ export const r = fn => (...args) => {
     // 2 This Function
     // 3 Parent Function
     const recordedPosition = getStackFrame(3);
-
-    function* hackGenerator() {
-        const gen = fn(...args);
-
-        gen.recordedPosition = recordedPosition;
-
-        return gen;
-    }
-
-    return hackGenerator();
+    const gen = fn(...args);
+    gen.recordedPosition = recordedPosition;
+    return gen;
 };
 
 const isGenerator = generator => generator && (generator.toString() === '[object Generator]' || generator.toString() === '[object AsyncGenerator]');
