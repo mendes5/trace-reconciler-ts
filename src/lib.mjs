@@ -36,9 +36,7 @@ export const createAsyncFiberRoot = (gen, plugins = [], options = {}) => {
 };
 
 export const createSyncFiberRoot = (gen, plugins = [], options = {}) => {
-
     const ctx = createContext();
-    const lock = createLock();
 
     const instantiatedPlugins = [...plugins, refPlugin, usePlugin, keyPlugin, memoPlugin].map(x => x(ctx));
 
